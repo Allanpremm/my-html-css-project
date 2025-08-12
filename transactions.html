@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transactions</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    /* Optional style for clear button */
+    .clear-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .clear-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Transaction History</h1></header>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="savings.html">Savings</a>
+  </nav>
+
+  <main class="container">
+    <section class="summary">
+      <h2>Current Summary</h2>
+      <div class="grid-3">
+        <div class="card income"><h3>Total Income</h3><p id="totalIncome">₹0</p></div>
+        <div class="card expense"><h3>Total Expenses</h3><p id="totalExpenses">₹0</p></div>
+        <div class="card savings"><h3>Balance</h3><p id="balance">₹0</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Add New Transaction</h2>
+      <form id="txnForm">
+        <input type="text" id="desc" placeholder="Description" required />
+        <input type="number" id="amt" placeholder="Amount (₹)" required />
+        <select id="type">
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+        <input type="text" id="category" placeholder="Category (e.g. Food, Travel)" />
+        <button type="submit">Add Transaction</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Recent Transactions</h2>
+      <ul id="txnList"></ul>
+      <button class="clear-btn" onclick="clearHistory()">Clear History</button>
+    </section>
+  </main>
+
+  <script>
+    const txnForm = document.getElementById('txnForm');
+    const txnList = document.getElementById('txnList');
+    const totalIncomeEl = document.getElementById('totalIncome');
+    const totalExpensesEl = document.getElementById('totalExpenses');
+    const balanceEl = document.getElementById('balance');
+
+    function updateSummary() {
+      const txns = JSON.parse(localStorage.getItem('txns')) || [];
+      let income = 0, expense = 0;
+      txns.forEach(txn => {
+        if (txn.type === 'income') income += txn.amt;
+        else expense += txn.amt;
+      });
+      totalIncomeEl.textContent = `₹${income.toLocaleString('en-IN')}`;
+      totalExpensesEl.textContent = `₹${expense.toLocaleString('en-IN')}`;
+      balanceEl.textContent = `₹${(income - expense).toLocaleString('en-IN')}`;
+
+      localStorage.setItem('finance', JSON.stringify({ income, expense }));
+    }
+
+    function loadTransactions() {
+      const txns = JSON.parse(localStorage.getItem('txns')) || [];
+      txnList.innerHTML = '';
+      txns.slice().reverse().forEach((txn, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${txn.desc}</strong> 
+          <span class="badge ${txn.type}">${txn.type.toUpperCase()}</span> 
+          <span>₹${txn.amt.toLocaleString('en-IN')}</span>
+          ${txn.category ? `<em>(${txn.category})</em>` : ''}
+          <button class="delete-btn" data-index="${txns.length - 1 - index}">❌</button>
+        `;
+        txnList.appendChild(li);
+      });
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const index = e.target.dataset.index;
+          deleteTransaction(index);
+        });
+      });
+    }
+
+    function deleteTransaction(index) {
+      const txns = JSON.parse(localStorage.getItem('txns')) || [];
+      const removed = txns.splice(index, 1)[0];
+      localStorage.setItem('txns', JSON.stringify(txns));
+
+      const finance = JSON.parse(localStorage.getItem('finance')) || { income: 0, expense: 0 };
+      finance[removed.type] -= removed.amt;
+      localStorage.setItem('finance', JSON.stringify(finance));
+
+      loadTransactions();
+      updateSummary();
+    }
+
+    function clearHistory() {
+      if (confirm("Are you sure you want to clear all transaction history?")) {
+        localStorage.removeItem('txns');
+        localStorage.setItem('finance', JSON.stringify({ income: 0, expense: 0 }));
+        loadTransactions();
+        updateSummary();
+      }
+    }
+
+    txnForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const desc = txnForm.desc.value;
+      const amt = parseFloat(txnForm.amt.value);
+      const type = txnForm.type.value;
+      const category = txnForm.category.value;
+
+      const txns = JSON.parse(localStorage.getItem('txns')) || [];
+      txns.push({ desc, amt, type, category });
+      localStorage.setItem('txns', JSON.stringify(txns));
+
+      txnForm.reset();
+      loadTransactions();
+      updateSummary();
+    });
+
+    loadTransactions();
+    updateSummary();
+  </script>
+</body>
+</html>
