@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Animated Weather Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Added Heading -->
+  <header class="dashboard-header">
+    <h1>🌍 Global Weather Overview</h1>
+    <p>weather updates</p>
+  </header>
+
+  <main class="weather-dashboard">
+
+    <div class="weather-card sunny">
+      <div class="sun-animation"></div>
+      <h2 class="city">New York, USA</h2>
+      <img src="sunny.svg" alt="Sunny" class="weather-icon">
+      <div class="temperature hot">28°C</div>
+      <p class="description">Sunny with clear skies</p>
+      <!-- Extra info -->
+      <div class="extra-info">
+        <span>💨 Wind: 12 km/h</span>
+        <span>💧 Humidity: 40%</span>
+      </div>
+    </div>
+
+    <div class="weather-card cloudy">
+      <div class="cloud-animation"></div>
+      <h2 class="city">London, UK</h2>
+      <img src="cloudy.svg" alt="Cloudy" class="weather-icon">
+      <div class="temperature mild">18°C</div>
+      <p class="description">Overcast and breezy</p>
+      <!-- Extra info -->
+      <div class="extra-info">
+        <span>💨 Wind: 20 km/h</span>
+        <span>💧 Humidity: 65%</span>
+      </div>
+    </div>
+
+    <div class="weather-card rain">
+      <div class="rain-animation"></div>
+      <h2 class="city">Mumbai, India</h2>
+      <img src="rain.svg" alt="Rain" class="weather-icon">
+      <div class="temperature mild">24°C</div>
+      <p class="description">Light rain showers</p>
+      <!-- Extra info -->
+      <div class="extra-info">
+        <span>💨 Wind: 15 km/h</span>
+        <span>💧 Humidity: 78%</span>
+      </div>
+    </div>
+
+    <div class="weather-card storm">
+      <div class="lightning-animation"></div>
+      <h2 class="city">Tokyo, Japan</h2>
+      <img src="storm.svg" alt="Storm" class="weather-icon">
+      <div class="temperature cold">12°C</div>
+      <p class="description">Thunderstorms expected</p>
+      <!-- Extra info -->
+      <div class="extra-info">
+        <span>💨 Wind: 30 km/h</span>
+        <span>💧 Humidity: 55%</span>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
